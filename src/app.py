@@ -111,14 +111,6 @@ family = [
 def get_member_list():
     return jsonify(family), 200
 
-@app.route('/member/<int:member_id>', methods=['GET'])
-def get_member(member_id):
-    for m in family:
-        if m ['id'] == member_id:
-            return m
-    m = family.get_member(member_id)
-    return jsonify(member_id), 200
-
 @app.route('/member', methods=['POST'])
 def add_member():
     request_body = request.json
@@ -129,6 +121,14 @@ def add_member():
 def delete_member(member_id):
     family.pop(member_id-1)
     return jsonify(family), 200
+
+@app.route('/member/<int:member_id>', methods=['GET'])
+def get_member(member_id):
+    for m in family:
+        if m ['id'] == member_id:
+            return m
+    m = family.get_member(member_id)
+    return jsonify(member_id), 200
 
 
 
