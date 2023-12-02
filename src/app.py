@@ -9,6 +9,8 @@ from flask_cors import CORS
 from utils import APIException, generate_sitemap
 from admin import setup_admin
 from models import db, User
+from random import randint
+
 #from models import Person
 
 app = Flask(__name__)
@@ -44,6 +46,93 @@ def handle_hello():
     }
 
     return jsonify(response_body), 200
+
+todos = [
+    {
+        "done": True,
+        "label": "Sample Todo 1"
+    },
+    {
+        "done": True,
+        "label": "Sample Todo 2"
+    }
+]
+
+@app.route('/todo', methods=['GET'])
+def get_todo():
+
+   return jsonify(todos), 200
+
+@app.route('/todo', methods=['POST'])
+def add_todo():
+
+    request_body = request.json
+    todos.append(request_body)
+
+    return jsonify(todos), 200
+
+@app.route('/todo/<int:todo_id>', methods=['DELETE'])
+def delete_todo(todo_id):
+    todos.pop(todo_id-1)
+  
+    return jsonify(todos), 200
+
+def generateId():
+        return randint(0, 99999999)
+
+family = [
+    {
+                "id": generateId(),
+                "first_name": "John",
+                "last_name": "Jackson",
+                "age": 33,
+                "lucky_numbers": [7, 13, 22]
+            },
+            {
+                "id": generateId(),
+                "first_name": "Jane",
+                "last_name": "Jackson",
+                "age": 35,
+                "lucky_numbers": [10, 14, 3]
+            },
+            {
+                "id": generateId(),
+                "first_name": "Jimmy",
+                "last_name":"Jackson",
+                "age": 5,
+                "lucky_numbers": [1]
+            }
+]
+
+
+
+
+@app.route('/member', methods=['GET'])
+def get_member_list():
+    return jsonify(family), 200
+
+@app.route('/member/<int:member_id>', methods=['GET'])
+def get_member(member_id):
+    for m in family:
+        if m ['id'] == member_id:
+            return m
+    m = family.get_member(member_id)
+    return jsonify(member_id), 200
+
+@app.route('/member', methods=['POST'])
+def add_member():
+    request_body = request.json
+    family.append(request_body)
+    return jsonify(family), 200
+
+@app.route('/member/<int:member_id>', methods=['DELETE'])
+def delete_member(member_id):
+    family.pop(member_id-1)
+    return jsonify(family), 200
+
+
+
+
 
 # this only runs if `$ python src/app.py` is executed
 if __name__ == '__main__':
